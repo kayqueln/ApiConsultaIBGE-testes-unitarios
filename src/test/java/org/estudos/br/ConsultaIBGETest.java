@@ -54,6 +54,7 @@ public class ConsultaIBGETest {
 
         String distritoJson = consultarDistrito(150010705);
 
+
         assertEquals(jsonResposta, new String(distritoJson.getBytes("ISO-8859-1"), "UTF-8"));
     }
 
