@@ -6,11 +6,12 @@ import org.junit.jupiter.api.Test;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import org.mockito.Mockito;
+import static org.estudos.br.ConsultaIBGE.consultarDistrito;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 
@@ -39,31 +40,36 @@ public class ConsultaIBGETest {
     }
 
 
+    private static final String DISTRITOS_API_URL = "https://example.com/distritos/";
+
     @Test
-    public void testConsultarDistrito() throws IOException {
-        ConsultaIBGE consultaIBGE = Mockito.mock(ConsultaIBGE.class);
+    @DisplayName("Teste para consultar o distrito")
+    public void testconsultarDistrito() throws IOException {
+        String jsonResposta = "[{\"id\":150010705,\"nome\":\"Abaetetuba\",\"municipio\":{\"id\":1500107,\"nome\":\"Abaetetuba\",\"microrregiao\":{\"id\":15011,\"nome\":\"Cametá\",\"mesorregiao\":{\"id\":1504,\"nome\":\"Nordeste Paraense\",\"UF\":{\"id\":15,\"sigla\":\"PA\",\"nome\":\"Pará\",\"regiao\":{\"id\":1,\"sigla\":\"N\",\"nome\":\"Norte\"}}}},\"regiao-imediata\":{\"id\":150003,\"nome\":\"Abaetetuba\",\"regiao-intermediaria\":{\"id\":1501,\"nome\":\"Belém\",\"UF\":{\"id\":15,\"sigla\":\"PA\",\"nome\":\"Pará\",\"regiao\":{\"id\":1,\"sigla\":\"N\",\"nome\":\"Norte\"}}}}}}]";
 
-        when(consultaIBGE.consultarDistrito(1)).thenReturn("Distrito 1");
+        HttpURLConnection connectionMock = mock(HttpURLConnection.class);
+        when(connectionMock.getInputStream()).thenReturn(new ByteArrayInputStream(jsonResposta.getBytes()));
+        when(connectionMock.getResponseCode()).thenReturn(HttpURLConnection.HTTP_OK);
 
-        InputStream in = new ByteArrayInputStream("2\n1\n3\n".getBytes());
-        System.setIn(in);
+        String distritoJson = consultarDistrito(150010705);
 
-        Main.main(new String[]{});
-
-        Mockito.verify(consultaIBGE).consultarDistrito(1);
+        assertEquals(jsonResposta, distritoJson);
     }
 
+
     @Test
+    @DisplayName("Teste para testar a opção de sair do menu")
     public void testSair() {
         InputStream in = new ByteArrayInputStream("3\n".getBytes());
         System.setIn(in);
 
         Main.main(new String[]{});
 
-        assertEquals(true, true);
+        assertTrue(true);
     }
 
     @Test
+    @DisplayName("Teste para testar uma opção inválida do menu")
     public void testOpcaoInvalida() {
         InputStream in = new ByteArrayInputStream("4\n3\n".getBytes());
         System.setIn(in);
