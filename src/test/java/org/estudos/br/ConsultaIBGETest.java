@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 
 import static org.estudos.br.ConsultaIBGE.consultarDistrito;
 
@@ -53,7 +54,7 @@ public class ConsultaIBGETest {
 
         String distritoJson = consultarDistrito(150010705);
 
-        assertEquals(jsonResposta, distritoJson);
+        assertEquals(jsonResposta, new String(distritoJson.getBytes("ISO-8859-1"), "UTF-8"));
     }
 
 
